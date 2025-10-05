@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ShoppingListApp()
+                    MainNavigation()
                 }
             }
         }
@@ -41,7 +42,7 @@ fun ShoppingListApp() {
     val filteredItems by remember(searchQuery, shoppingItems) {
         derivedStateOf {
             if (searchQuery.isBlank()) {
-                shoppingItems
+                shoppingItems.toList()
             } else {
                 shoppingItems.filter { it.contains(searchQuery, ignoreCase = true) }
             }
@@ -51,16 +52,15 @@ fun ShoppingListApp() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues())
             .padding(horizontal = 16.dp)
     ) {
-        Title()
+        Spacer(modifier = Modifier.height(16.dp))
         ItemInput(
             text = newItemText,
             onTextChange = { newItemText = it },
             onAddItem = {
                 if (newItemText.isNotBlank()) {
-                    shoppingItems.add(newItemText)
+                    shoppingItems.add(0, newItemText)
                     newItemText = ""
                 }
             }
@@ -74,7 +74,6 @@ fun ShoppingListApp() {
         ShoppingList(items = filteredItems)
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
